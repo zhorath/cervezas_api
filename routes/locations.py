@@ -1,9 +1,10 @@
 from flask_restful import Resource
 
+
 class Home(Resource):
 
     def get(self):
-        pass
+        return "Hi"
 
     def post(self):
         pass
@@ -33,4 +34,4 @@ class addNewBeerToClient(Resource):
         pass
 
     def post(self):
-        pass        
+        pass

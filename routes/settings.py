@@ -2,7 +2,7 @@
 from flask import Flask, abort, request
 
 # Import Flask RestFul Lib
-from flask_restful import Api
+from flask_restful import Resource, Api
 
 # Import Routes
 from routes.locations import *
@@ -13,7 +13,6 @@ app = Flask(__name__)
 
 # Init API Module
 api = Api(app)
-
 
 # Add Resources
 api.add_resource(Home, '/')
