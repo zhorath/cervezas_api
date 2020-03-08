@@ -1,0 +1,21 @@
+2020-03-08 10:23:02,000 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:36:17,794 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:36:53,458 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:38:15,592 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:38:29,050 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:38:59,210 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:39:45,798 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:40:36,310 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:40:49,184 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:41:07,002 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:41:34,796 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:42:04,993 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:42:16,854 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:42:26,865 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:42:35,185 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:42:42,574 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:43:30,949 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:43:49,684 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:44:21,927 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:44:43,550 | DEBUG | __init__.py > l.#44 | Reading __init__
+2020-03-08 10:44:44,072 | ERROR | __init__.py > l.#76 | Config.yml is not found in the project path
