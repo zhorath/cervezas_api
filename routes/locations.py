@@ -47,7 +47,7 @@ class loginUser(Resource):
         if self.error:
             return {
                 "status": self.error_message,
-                "is_sucess": True
+                "is_sucess": False
             }, 400
 
         try:
@@ -61,12 +61,18 @@ class loginUser(Resource):
                 "is_sucess": False
             }, 400
 
+        if user_id is None:
+            return {
+                "status": "Check username and password",
+                "is_sucess": False
+            }, 400
+
         session_token = create_hash({
             "username": data['username'],
             "password": data['password']
         })
 
-        redis.set(session_token, user_id)
+        redis.set(session_token, str(user_id))
 
         return {
             "status": "Login successfully",
@@ -96,7 +102,7 @@ class getBeerDetail(Resource):
         if self.error:
             return {
                 "status": self.error_message,
-                "is_sucess": True
+                "is_sucess": False
             }, 400
 
         try:
@@ -139,7 +145,7 @@ class addNewBeerToUser(Resource):
         if self.error:
             return {
                 "status": self.error_message,
-                "is_sucess": True
+                "is_sucess": False
             }, 400
 
         try:
@@ -174,7 +180,7 @@ class addUser(Resource):
         if self.error:
             return {
                 "status": self.error_message,
-                "is_sucess": True
+                "is_sucess": False
             }, 400
 
         try:
