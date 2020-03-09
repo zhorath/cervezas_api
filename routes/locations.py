@@ -207,8 +207,7 @@ class addUser(Resource):
 
             return {
                 "status": "New user created",
-                "is_sucess": True,
-                "user_id": user_id
+                "is_sucess": True
             }, 201, {"token_api": session_token}
         except Exception as e:
             return {"status": "Error", "is_sucess": False, "error_message": str(e)}

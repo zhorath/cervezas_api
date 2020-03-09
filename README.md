@@ -12,6 +12,25 @@ All responses will have the form
 }
 ```
 
+### Login
+
+**Definition**
+
+`GET /login`
+
+**Response**
+
+- `200 OK` on success
+
+```json
+{
+    "status": "Login successfully",
+    "is_sucess": true
+}
+```
+
+Save the header property called "token_api", is goona be required for futures endpoints.
+
 ### Get All Beers
 
 **Definition**
@@ -59,7 +78,10 @@ All responses will have the form
 **Arguments**
 
 - `"beer_id":int` beer identificator
-- `"user_id":int` user identificator
+
+**Headers**
+
+- `"token_api":str` session token identificator
 
 **Response**
 
@@ -106,6 +128,14 @@ All responses will have the form
 
 `POST /new_user`
 
+**Arguments**
+
+- `"beer_id":int` beer identificator
+
+**Headers**
+
+- `"token_api":str` session token identificator
+
 **Response**
 
 - `201 Created` on success
@@ -113,7 +143,6 @@ All responses will have the form
 ```json
 {
     "status": "New user created",
-    "is_sucess": true,
-    "user_id": 6
+    "is_sucess": true
 }
 ```
