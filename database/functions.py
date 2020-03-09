@@ -44,6 +44,37 @@ def newUser(username: str, password: str):
     return ([dict(row) for row in rows])
 
 
+def checkUser(username: str, password: str):
+    """
+        Query to add a new beer to user
+    """
+
+    _conn = getDBConnection()
+
+    with _conn:
+        cursor = _conn.cursor()
+        update_ts = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        cursor.execute(
+            """
+                select  *
+                from    tb_users
+                where   username = ?
+                        and
+                        password = ?
+                        and
+                        is_active is true;
+            """, (username, password)
+        )
+
+        rows = cursor.fetchall()
+        response = [dict(row) for row in rows]
+
+    if len(response) == 1:
+        return response[0]
+    else:
+        return None
+
+
 def getAllBeers():
     """
         Query to get all available beers from Sqlite

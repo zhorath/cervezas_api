@@ -1,3 +1,6 @@
+# Initializer
+from initializer import redis
+
 # Import Resource from Flask Restful
 from flask_restful import Resource
 
@@ -5,7 +8,11 @@ from flask_restful import Resource
 from flask import request
 
 # Import DB Function
-from database.functions import getAllBeers, getBeerByUser, newBeerToUser, newUser
+from database.utils import create_hash
+from database.functions import getAllBeers, getBeerByUser, newBeerToUser, newUser, checkUser
+
+# Init Redis
+redis = redis.connect()
 
 
 class getAllAvailableBeers(Resource):
@@ -18,63 +25,122 @@ class getAllAvailableBeers(Resource):
         }
 
 
-class getBeerDetail(Resource):
+class loginUser(Resource):
+
+    def __init__(self):
+        self.error = False
+        self.error_message = None
 
     def post(self):
         data = request.json
 
         if data is None:
+            self.error = True
+            self.error_message = "Request body cannot be null"
+        if 'username' not in data:
+            self.error = True
+            self.error_message = "Parameter username is not found"
+        if 'password' not in data:
+            self.error = True
+            self.error_message = "Parameter password is not found"
+
+        if self.error:
             return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Request body cannot be null"
-            }
-        if 'beer_id' not in data:
+                "status": self.error_message,
+                "is_sucess": True
+            }, 400
+
+        try:
+            user_id = checkUser(
+                data['username'],
+                data['password']
+            )
+        except Exception:
             return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Parameter beer_id is missing"
-            }
-        if 'user_id' not in data:
-            return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Parameter user_id is missing"
-            }
+                "status": "Check username and password",
+                "is_sucess": False
+            }, 400
+
+        session_token = create_hash({
+            "username": data['username'],
+            "password": data['password']
+        })
+
+        redis.set(session_token, user_id)
 
         return {
-            "status": "Success",
-            "is_successful": True,
-            "data": getBeerByUser(
+            "status": "Login successfully",
+            "is_sucess": True
+        }, 200, {"token_api": session_token}
+
+
+class getBeerDetail(Resource):
+
+    def __init__(self):
+        self.error = False
+        self.error_message = None
+
+    def post(self):
+        data = request.json
+
+        if data is None:
+            self.error = True
+            self.error_message = "Request body cannot be null"
+        if 'beer_id' not in data:
+            self.error = True
+            self.error_message = "Parameter beer_id is not found"
+        if 'user_id' not in data:
+            self.error = True
+            self.error_message = "Parameter user_id is not found"
+
+        if self.error:
+            return {
+                "status": self.error_message,
+                "is_sucess": True
+            }, 400
+
+        try:
+            db_response = getBeerByUser(
                 data['beer_id'],
                 data['user_id']
             )
-        }
+
+            return {
+                "status": "Success",
+                "is_successful": True,
+                "data": db_response
+            }, 200
+        except Exception as e:
+            return {
+                "status": str(e),
+                "is_successful": False
+            }, 400
 
 
 class addNewBeerToUser(Resource):
 
+    def __init__(self):
+        self.error = False
+        self.error_message = None
+
     def post(self):
         data = request.json
 
         if data is None:
-            return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Request body cannot be null"
-            }
+            self.error = True
+            self.error_message = "Request body cannot be null"
         if 'beer_id' not in data:
-            return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Parameter beer_id is missing"
-            }
+            self.error = True
+            self.error_message = "Parameter beer_id is not found"
         if 'user_id' not in data:
+            self.error = True
+            self.error_message = "Parameter user_id is not found"
+
+        if self.error:
             return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Parameter user_id is missing"
-            }
+                "status": self.error_message,
+                "is_sucess": True
+            }, 400
 
         try:
             newBeerToUser(
@@ -88,27 +154,28 @@ class addNewBeerToUser(Resource):
 
 class addUser(Resource):
 
+    def __init__(self):
+        self.error = False
+        self.error_message = None
+
     def post(self):
         data = request.json
 
         if data is None:
-            return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Request body cannot be null"
-            }
+            self.error = True
+            self.error_message = "Request body cannot be null"
         if 'username' not in data:
-            return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Parameter username is missing"
-            }
+            self.error = True
+            self.error_message = "Parameter username is not found"
         if 'password' not in data:
+            self.error = True
+            self.error_message = "Parameter password is not found"
+
+        if self.error:
             return {
-                "status": "Error",
-                "is_successful": False,
-                "error_message": "Parameter password is missing"
-            }
+                "status": self.error_message,
+                "is_sucess": True
+            }, 400
 
         try:
             return {

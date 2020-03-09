@@ -4,6 +4,9 @@ import os
 # Import Redis
 import redis
 
+# Import Logging
+from initializer import logging
+
 
 def Connect(*args, **kwargs):
     """
