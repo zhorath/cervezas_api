@@ -1,3 +1,6 @@
+# Import Json
+import json
+
 # Initializer
 from initializer import redis
 
@@ -37,10 +40,10 @@ class loginUser(Resource):
         if data is None:
             self.error = True
             self.error_message = "Request body cannot be null"
-        if 'username' not in data:
+        elif 'username' not in data:
             self.error = True
             self.error_message = "Parameter username is not found"
-        if 'password' not in data:
+        elif 'password' not in data:
             self.error = True
             self.error_message = "Parameter password is not found"
 
@@ -93,10 +96,10 @@ class getBeerDetail(Resource):
         if token_api is None:
             self.error = True
             self.error_message = "token_api is required. Not found in headers"
-        if data is None:
+        elif data is None:
             self.error = True
             self.error_message = "Request body cannot be null"
-        if 'beer_id' not in data:
+        elif 'beer_id' not in data:
             self.error = True
             self.error_message = "Parameter beer_id is not found"
 
@@ -106,12 +109,12 @@ class getBeerDetail(Resource):
                 "is_sucess": False
             }, 400
 
-        print(redis.get(token_api))
+        session_data = eval(redis.get(token_api).decode('utf-8'))
 
         try:
             db_response = getBeerByUser(
                 data['beer_id'],
-                int(redis.get(token_api))
+                session_data['id']
             )
 
             return {
@@ -134,16 +137,17 @@ class addNewBeerToUser(Resource):
 
     def post(self):
         data = request.json
+        token_api = request.headers.get('token_api')
 
-        if data is None:
+        if token_api is None:
+            self.error = True
+            self.error_message = "token_api is required. Not found in headers"
+        elif data is None:
             self.error = True
             self.error_message = "Request body cannot be null"
-        if 'beer_id' not in data:
+        elif 'beer_id' not in data:
             self.error = True
             self.error_message = "Parameter beer_id is not found"
-        if 'user_id' not in data:
-            self.error = True
-            self.error_message = "Parameter user_id is not found"
 
         if self.error:
             return {
@@ -151,10 +155,12 @@ class addNewBeerToUser(Resource):
                 "is_sucess": False
             }, 400
 
+        session_data = eval(redis.get(token_api).decode('utf-8'))
+
         try:
             newBeerToUser(
                 data['beer_id'],
-                data['user_id']
+                session_data['id']
             )
             return {"status": "Update successfully", "is_sucess": True}
         except Exception as e:
@@ -173,10 +179,10 @@ class addUser(Resource):
         if data is None:
             self.error = True
             self.error_message = "Request body cannot be null"
-        if 'username' not in data:
+        elif 'username' not in data:
             self.error = True
             self.error_message = "Parameter username is not found"
-        if 'password' not in data:
+        elif 'password' not in data:
             self.error = True
             self.error_message = "Parameter password is not found"
 
@@ -187,13 +193,22 @@ class addUser(Resource):
             }, 400
 
         try:
+            user_id = newUser(
+                data['username'],
+                data['password']
+            )[0]["user_id"]
+
+            session_token = create_hash({
+                "username": data['username'],
+                "password": data['password']
+            })
+
+            redis.set(session_token, str(user_id))
+
             return {
                 "status": "New user created",
                 "is_sucess": True,
-                "user_id": newUser(
-                    data['username'],
-                    data['password']
-                )[0]["user_id"]
-            }, 201
+                "user_id": user_id
+            }, 201, {"token_api": session_token}
         except Exception as e:
             return {"status": "Error", "is_sucess": False, "error_message": str(e)}
