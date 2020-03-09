@@ -111,6 +111,10 @@ Save the header property called "token_api", is goona be required for futures en
 
 `GET /add_beer`
 
+**Arguments**
+
+- `"beer_id":int` beer identificator
+
 **Response**
 
 - `200 OK` on success
@@ -130,11 +134,8 @@ Save the header property called "token_api", is goona be required for futures en
 
 **Arguments**
 
-- `"beer_id":int` beer identificator
-
-**Headers**
-
-- `"token_api":str` session token identificator
+- `"username":Str` Client username
+- `"password":Str` Client password
 
 **Response**
 
