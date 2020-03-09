@@ -88,16 +88,17 @@ class getBeerDetail(Resource):
 
     def post(self):
         data = request.json
+        token_api = request.headers.get('token_api')
 
+        if token_api is None:
+            self.error = True
+            self.error_message = "token_api is required. Not found in headers"
         if data is None:
             self.error = True
             self.error_message = "Request body cannot be null"
         if 'beer_id' not in data:
             self.error = True
             self.error_message = "Parameter beer_id is not found"
-        if 'user_id' not in data:
-            self.error = True
-            self.error_message = "Parameter user_id is not found"
 
         if self.error:
             return {
@@ -105,10 +106,12 @@ class getBeerDetail(Resource):
                 "is_sucess": False
             }, 400
 
+        print(redis.get(token_api))
+
         try:
             db_response = getBeerByUser(
                 data['beer_id'],
-                data['user_id']
+                int(redis.get(token_api))
             )
 
             return {
